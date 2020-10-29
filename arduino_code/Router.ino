@@ -17,6 +17,7 @@ float temp; //Stores temperature value
 
 void wakeUpNow()        // here the interrupt is handled after wakeup
 {
+   Serial.println("The Arduino is awake");
 }
 
 void setup()
@@ -35,7 +36,7 @@ void setup()
 void sleepNow()         // here we put the arduino to sleep
 {
     Serial.println();
-    Serial.println("Sleeping");
+    Serial.println("The Arduino is sleeping");
     
     
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
