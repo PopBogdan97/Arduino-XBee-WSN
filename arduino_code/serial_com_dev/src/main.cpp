@@ -34,8 +34,8 @@ void setup()
 
 void sleepNow()         // here we put the arduino to sleep
 {
-    Serial.println();
-    Serial.println("Sleeping");
+    //Serial.println();
+    //Serial.println("Sleeping");
     
     
     set_sleep_mode(SLEEP_MODE_PWR_DOWN);   // sleep mode is set here
@@ -68,11 +68,11 @@ void loop()
     //Print temp and humidity values to serial monitor
     Serial.print("ID: ");
     Serial.print(ID);
-    Serial.print("  Hum: ");
+    Serial.print("; Hum: ");
     Serial.print(hum);
-    Serial.print("%, Temp: ");
+    Serial.print("%; Temp: ");
     Serial.print(temp);
-    Serial.print("° ");
+    Serial.println("°");
     delay(3000); //Delay 2 sec.
     sleepNow();
 }
