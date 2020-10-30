@@ -72,7 +72,7 @@ void loop()
     Serial.print(hum);
     Serial.print("%; Temp: ");
     Serial.print(temp);
-    Serial.println("°");
+    Serial.print("°");
     delay(3000); //Delay 2 sec.
     sleepNow();
 }
