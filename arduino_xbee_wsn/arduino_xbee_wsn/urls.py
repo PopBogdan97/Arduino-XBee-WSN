@@ -18,5 +18,6 @@ from django.urls import path, include
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('ardxbwsn_main.urls')),
+    path('', include('dashboard.urls')),
+    path('serializer/', include('serializer.urls')),
 ]

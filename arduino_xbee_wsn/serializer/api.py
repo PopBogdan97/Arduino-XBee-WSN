@@ -1,4 +1,4 @@
-from .models import Sensor
+from dashboard.models import Sensor
 from rest_framework import viewsets, permissions
 from .serializers import SensorSerializer
 

@@ -1,7 +1,6 @@
 from django.shortcuts import render
 from django.template import loader
 from .models import Sensor
-from .serializers import SensorSerializer
 
 # Create your views here.
 
