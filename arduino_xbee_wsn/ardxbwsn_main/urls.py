@@ -1,7 +1,11 @@
 from django.urls import path
 from ardxbwsn_main import views
+from rest_framework import routers
+from .api import SensorViewSet
 
-urlpatterns = [
-    path('sensors/', views.sensor_list),
-    path('sensors/<int:pk>/', views.sensor_detail),
-]
+router = routers.DefaultRouter()
+router.register('api/sensors', SensorViewSet, 'sensors')
+
+
+
+urlpatterns = router.urls

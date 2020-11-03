@@ -1,0 +1,190 @@
+{% extends "ardxbwsn_main/layout.html" %}
+
+{% block temperature_chart %}
+<div>
+    <canvas id="tmpChart" height="200px" width="200px"></canvas>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
+
+<script>
+var value = {{ data.tmp_avg }};
+var data = {
+  labels: [
+    "My val",
+    ""
+  ],
+  datasets: [
+    {
+      data: [value, 50-value],
+      backgroundColor: [
+        "#FF6384",
+        "#AAAAAA"
+      ],
+      hoverBackgroundColor: [
+        "#FF6384",
+        "#AAAAAA"
+      ],
+      hoverBorderColor: [
+        "#FF6384",
+        "#ffffff"
+      ]
+    }]
+};
+
+var tmpChart = new Chart(document.getElementById('tmpChart'), {
+  type: 'doughnut',
+  data: data,
+  options: {
+  	responsive: true,
+    legend: {
+      display: false
+    },
+    cutoutPercentage: 80,
+    tooltips: {
+    	filter: function(item, data) {
+        var label = data.labels[item.index];
+        if (label) return item;
+      }
+    },
+    rotation: 1 * Math.PI,
+    circumference: 1 * Math.PI,
+    maintainAspectRatio: true
+  }
+});
+
+textCenter(value);
+
+function textCenter(val) {
+  Chart.pluginService.register({
+    beforeDraw: function(chart) {
+      var width = chart.chart.width,
+          height = chart.chart.height,
+          ctx = chart.chart.ctx;
+
+      ctx.restore();
+      var fontSize = (height / 114).toFixed(2);
+      ctx.font = fontSize + "em sans-serif";
+      ctx.textBaseline = "middle";
+
+      var text = val+"°",
+          textX = Math.round((width - ctx.measureText(text).width) / 2),
+          textY = height / 2;
+
+      ctx.fillText(text, textX, textY);
+      ctx.save();
+    }
+  });
+}
+</script>
+{% endblock %}
+
+{% block humidity_chart %}
+
+<div>
+    <canvas id="humChart" height="200px" width="200px"></canvas>
+</div>
+
+<script>
+    var value = {{ data.hum_avg }};
+    var data = {
+      labels: [
+        "My val",
+        ""
+      ],
+      datasets: [
+        {
+          data: [value, 100-value],
+          backgroundColor: [
+            "#FF6384",
+            "#AAAAAA"
+          ],
+          hoverBackgroundColor: [
+            "#FF6384",
+            "#AAAAAA"
+          ],
+          hoverBorderColor: [
+            "#FF6384",
+            "#ffffff"
+          ]
+        }]
+    };
+    
+    var humChart = new Chart(document.getElementById('humChart'), {
+      type: 'doughnut',
+      data: data,
+      options: {
+          responsive: true,
+        legend: {
+          display: false
+        },
+        cutoutPercentage: 80,
+        tooltips: {
+            filter: function(item, data) {
+            var label = data.labels[item.index];
+            if (label) return item;
+          }
+        },
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        maintainAspectRatio: true
+      }
+    });
+    
+    textCenterHum(value);
+    
+    function textCenterHum(val) {
+      Chart.pluginService.register({
+        beforeDraw: function(chart) {
+          var width = chart.chart.width,
+              height = chart.chart.height,
+              ctx = chart.chart.ctx;
+    
+          ctx.restore();
+          var fontSize = (height / 114).toFixed(2);
+          ctx.font = fontSize + "em sans-serif";
+          ctx.textBaseline = "middle";
+    
+          var text = val+"%",
+              textX = Math.round((width - ctx.measureText(text).width) / 2),
+              textY = height / 2;
+    
+          ctx.fillText(text, textX, textY);
+          ctx.save();
+        }
+      });
+    }
+    </script>
+{% endblock %}
+
+{% block line_tmp_hum %}
+<canvas id="line-chart" widht="800" height="450"></canvas>
+
+<script>
+new Chart(document.getElementById("line-chart"), {
+    type: 'line',
+    data: {
+      labels: {{ data.time_data }},
+      datasets: [{ 
+          data: {{ data.tmp_data }},
+          label: "Temperature",
+          borderColor: "#3e95cd",
+          fill: false
+        }, { 
+          data: {{ data.hum_data }},
+          label: "Humidity",
+          borderColor: "#8e5ea2",
+          fill: false
+        }
+      ]
+    },
+    options: {
+      title: {
+        display: true,
+        text: 'World population per region (in millions)'
+      }
+    }
+  });
+</script>
+{% endblock %}
+

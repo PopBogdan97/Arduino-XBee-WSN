@@ -1,46 +1,40 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
-from django.views.decorators.csrf import csrf_exempt
-from rest_framework.parsers import JSONParser
+from django.template import loader
 from .models import Sensor
 from .serializers import SensorSerializer
 
 # Create your views here.
 
-@csrf_exempt
-def sensor_list(request):
-    if request.method == 'GET':
-        sensors = Sensor.objects.all()
-        serializer = SensorSerializer(sensors, many=True)
-        return JsonResponse(serializer.data, safe=False)
+def charts(request):
+    sum_tmp = 0
+    sum_hum = 0
+    num_data = 0
+    tmp_data = []
+    hum_data = []
+    time_data = []
 
-    elif request.method == 'POST':
-        data = JSONParser().parse(request)
-        serializer = SensorSerializer(data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data, status=201)
-        return JsonResponse(serializer.errors, status=400)
+    queryset = Sensor.objects.order_by('timestamp')
 
-@csrf_exempt
-def sensor_detail(request, pk):
-    try:
-        sensor = Sensor.objects.get(pk=pk)
-    except Sensor.DoesNotExist:
-        return HttpResponse(status=404)
+    for sensor in queryset:
+        num_data = num_data + 1
+        sum_tmp = sum_tmp + sensor.temperature
+        sum_hum = sum_hum + sensor.humidity
+        tmp_data.append(sensor.temperature)
+        hum_data.append(sensor.humidity)
+        time_data.append(sensor.timestamp)
 
-    if request.method == 'GET':
-        serializer = SensorSerializer(sensor)
-        return JsonResponse(serializer.data)
+    tmp_avg = sum_tmp/num_data
+    hum_avg = sum_hum/num_data
 
-    elif request.method == 'PUT':
-        data = JSONParser().parse(request)
-        serializer = SensorSerializer(sensor, data=data)
-        if serializer.is_valid():
-            serializer.save()
-            return JsonResponse(serializer.data)
-        return JsonResponse(serializer.errors, status=400)
-    
-    elif request.method == 'DELETE':
-        sensor.delete()
-        return HttpResponse(status=204)
+    data = {
+        'tmp_avg': tmp_avg,
+        'hum_avg': hum_avg,
+        'tmp_data': tmp_data,
+        'hum_data': hum_data,
+        'time_data': time_data
+    }
+
+    return render(request, 'ardxbwsn_main/charts.html',
+    {
+        'data': data
+    })
