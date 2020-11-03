@@ -1,11 +1,9 @@
-{% extends "ardxbwsn_main/layout.html" %}
+{% extends "dashboard/layout.html" %}
 
 {% block temperature_chart %}
 <div>
     <canvas id="tmpChart" height="200px" width="200px"></canvas>
 </div>
-
-<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.1.4/Chart.min.js"></script>
 
 <script>
 var value = {{ data.tmp_avg }};
@@ -18,15 +16,15 @@ var data = {
     {
       data: [value, 50-value],
       backgroundColor: [
-        "#FF6384",
+        "#3e95cd",
         "#AAAAAA"
       ],
       hoverBackgroundColor: [
-        "#FF6384",
+        "#3e95cd",
         "#AAAAAA"
       ],
       hoverBorderColor: [
-        "#FF6384",
+        "#3e95cd",
         "#ffffff"
       ]
     }]
@@ -39,6 +37,11 @@ var tmpChart = new Chart(document.getElementById('tmpChart'), {
   	responsive: true,
     legend: {
       display: false
+    },
+    elements: {
+        center: {
+            text: value+"°"
+        }
     },
     cutoutPercentage: 80,
     tooltips: {
@@ -53,29 +56,24 @@ var tmpChart = new Chart(document.getElementById('tmpChart'), {
   }
 });
 
-textCenter(value);
-
-function textCenter(val) {
-  Chart.pluginService.register({
-    beforeDraw: function(chart) {
-      var width = chart.chart.width,
-          height = chart.chart.height,
-          ctx = chart.chart.ctx;
-
-      ctx.restore();
-      var fontSize = (height / 114).toFixed(2);
-      ctx.font = fontSize + "em sans-serif";
-      ctx.textBaseline = "middle";
-
-      var text = val+"°",
-          textX = Math.round((width - ctx.measureText(text).width) / 2),
-          textY = height / 2;
-
-      ctx.fillText(text, textX, textY);
-      ctx.save();
+Chart.pluginService.register({
+    beforeDraw: function (chart) {
+        var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 114).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
+        var text = chart.config.options.elements.center.text,
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 1.6;
+        ctx.fillText(text, textX, textY);
+        ctx.fillStyle = "white";
+        ctx.save();
     }
-  });
-}
+});
+
 </script>
 {% endblock %}
 
@@ -96,15 +94,15 @@ function textCenter(val) {
         {
           data: [value, 100-value],
           backgroundColor: [
-            "#FF6384",
+            "#8e5ea2",
             "#AAAAAA"
           ],
           hoverBackgroundColor: [
-            "#FF6384",
+            "#8e5ea2",
             "#AAAAAA"
           ],
           hoverBorderColor: [
-            "#FF6384",
+            "#8e5ea2",
             "#ffffff"
           ]
         }]
@@ -118,6 +116,11 @@ function textCenter(val) {
         legend: {
           display: false
         },
+        elements: {
+            center: {
+                text: value+"%"
+            }
+        },
         cutoutPercentage: 80,
         tooltips: {
             filter: function(item, data) {
@@ -130,35 +133,30 @@ function textCenter(val) {
         maintainAspectRatio: true
       }
     });
-    
-    textCenterHum(value);
-    
-    function textCenterHum(val) {
-      Chart.pluginService.register({
-        beforeDraw: function(chart) {
-          var width = chart.chart.width,
-              height = chart.chart.height,
-              ctx = chart.chart.ctx;
-    
-          ctx.restore();
-          var fontSize = (height / 114).toFixed(2);
-          ctx.font = fontSize + "em sans-serif";
-          ctx.textBaseline = "middle";
-    
-          var text = val+"%",
-              textX = Math.round((width - ctx.measureText(text).width) / 2),
-              textY = height / 2;
-    
-          ctx.fillText(text, textX, textY);
-          ctx.save();
-        }
-      });
+
+    Chart.pluginService.register({
+    beforeDraw: function (chart) {
+        var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 114).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
+        var text = chart.config.options.elements.center.text,
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 1.6;
+        ctx.fillText(text, textX, textY);
+        ctx.fillStyle = "white";
+        ctx.save();
     }
-    </script>
+});
+    
+</script>
 {% endblock %}
 
 {% block line_tmp_hum %}
-<canvas id="line-chart" widht="800" height="450"></canvas>
+<canvas id="line-chart" widht="2000" height="600"></canvas>
 
 <script>
 new Chart(document.getElementById("line-chart"), {
@@ -166,11 +164,13 @@ new Chart(document.getElementById("line-chart"), {
     data: {
       labels: {{ data.time_data }},
       datasets: [{ 
+          yAxisID: "y-axis-1",
           data: {{ data.tmp_data }},
           label: "Temperature",
           borderColor: "#3e95cd",
           fill: false
         }, { 
+          yAxisID: "y-axis-2",
           data: {{ data.hum_data }},
           label: "Humidity",
           borderColor: "#8e5ea2",
@@ -179,10 +179,36 @@ new Chart(document.getElementById("line-chart"), {
       ]
     },
     options: {
-      title: {
-        display: true,
-        text: 'World population per region (in millions)'
-      }
+      
+      scales: {
+        xAxes: [{
+          gridLines: {
+            lineWidth: 0.2, 
+            color: "#FFFFFF"
+          }
+        }],
+        yAxes: [{
+          id: 'y-axis-1',
+          type: 'linear',
+          position: 'left',
+          gridLines: {
+            lineWidth: 0.2, 
+            color: "#FFFFFF"
+          }
+        }, {
+          id: 'y-axis-2',
+          type: 'linear',
+          position: 'right',
+        }
+        ]
+      },
+      elements: {
+          center: {
+              text: ""
+          }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
     }
   });
 </script>

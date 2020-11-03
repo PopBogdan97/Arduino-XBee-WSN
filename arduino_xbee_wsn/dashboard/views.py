@@ -22,8 +22,8 @@ def charts(request):
         hum_data.append(sensor.humidity)
         time_data.append(sensor.timestamp)
 
-    tmp_avg = sum_tmp/num_data
-    hum_avg = sum_hum/num_data
+    tmp_avg = float(sum_tmp) // num_data
+    hum_avg = float(sum_hum) // num_data
 
     data = {
         'tmp_avg': tmp_avg,
@@ -33,7 +33,7 @@ def charts(request):
         'time_data': time_data
     }
 
-    return render(request, 'ardxbwsn_main/charts.html',
+    return render(request, 'dashboard/charts.html',
     {
         'data': data
     })
