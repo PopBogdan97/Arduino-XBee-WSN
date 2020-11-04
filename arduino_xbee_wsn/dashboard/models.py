@@ -4,6 +4,6 @@ from django.db import models
 
 class Sensor(models.Model):
     sensor_id = models.IntegerField()
-    temperature = models.IntegerField()
-    humidity = models.IntegerField()
-    timestamp = models.IntegerField()
+    temperature = models.FloatField()
+    humidity = models.FloatField()
+    timestamp = models.FloatField()
