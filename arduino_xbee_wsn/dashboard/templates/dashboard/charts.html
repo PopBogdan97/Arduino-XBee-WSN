@@ -162,7 +162,7 @@ Chart.pluginService.register({
 new Chart(document.getElementById("line-chart"), {
     type: 'line',
     data: {
-      labels: {{ data.time_data }},
+      labels: {{ data.time_data|safe }},
       datasets: [{ 
           yAxisID: "y-axis-1",
           data: {{ data.tmp_data }},

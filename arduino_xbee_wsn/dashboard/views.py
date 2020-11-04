@@ -1,6 +1,7 @@
 from django.shortcuts import render
 from django.template import loader
 from .models import Sensor
+from datetime import datetime
 
 # Create your views here.
 
@@ -20,10 +21,12 @@ def charts(request):
         sum_hum = sum_hum + sensor.humidity
         tmp_data.append(sensor.temperature)
         hum_data.append(sensor.humidity)
-        time_data.append(sensor.timestamp)
+        dt_ob = datetime.fromtimestamp(int(sensor.timestamp))
+        time_data.append(str(dt_ob))
 
-    tmp_avg = float(sum_tmp) // num_data
-    hum_avg = float(sum_hum) // num_data
+    print("TEMPERATURE", sum_tmp)
+    tmp_avg = round(sum_tmp / float(num_data), 2)
+    hum_avg = round(sum_hum / float(num_data), 2)
 
     data = {
         'tmp_avg': tmp_avg,
