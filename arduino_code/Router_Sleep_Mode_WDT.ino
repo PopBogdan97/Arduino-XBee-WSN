@@ -19,7 +19,7 @@ volatile int f_wdt=1;
 
 volatile int sleep_count = 0;
 const int interval = 1;
-const int sleep_total = (interval*60)/8;
+const int sleep_total = (interval*30)/8;
 
 
 ISR(WDT_vect)
@@ -89,16 +89,16 @@ void loop() {
     digitalWrite(LED_PIN, !digitalRead(LED_PIN));
     
     //Read data and store it to variables hum and temp
-    hum= dht.readTemperature();
-    temp = dht.readHumidity();
+    temp= dht.readTemperature();
+    hum= dht.readHumidity();
     //Print temp and humidity values to serial monitor
-    Serial.print("Sensor ID: ");
+    Serial.print("sensor_id: ");
     Serial.print(ID);
-    Serial.print("  Humidity: ");
+    Serial.print("; temperature: ");
+    Serial.print(temp); 
+    Serial.print("; humidity: ");
     Serial.print(hum);
-    Serial.print("%, Temperature: ");
-    Serial.print(temp);
-    Serial.print("° "); 
+
     delay(3000); //Delay 2 sec.
     sleep_count = 0;
     }
