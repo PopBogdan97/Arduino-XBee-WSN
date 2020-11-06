@@ -21,6 +21,8 @@ volatile int sleep_count = 0;
 const int interval = 1;
 const int sleep_total = (interval*30)/8;
 
+const int XBee_wake = 9;
+
 
 ISR(WDT_vect)
 {
@@ -57,7 +59,7 @@ void setup() {
   dht.begin();
   Serial.println("Initialising...");
   delay(100); //Allow for serial print to complete.
-
+  
   pinMode(LED_PIN,OUTPUT);
 
   /*** Setup the WDT ***/
@@ -79,6 +81,10 @@ void setup() {
   Serial.println("Initialisation complete.");
   delay(100); //Allow for serial print to complete.
 
+  pinMode(XBee_wake, OUTPUT);
+  digitalWrite(XBee_wake, LOW);
+
+  delay(100);
 }
 
 void loop() {
@@ -104,6 +110,9 @@ void loop() {
     }
     /* Don't forget to clear the flag. */
     f_wdt = 0;
+
+    pinMode(XBee_wake, INPUT); // put pin in a high impedence state
+    digitalWrite(XBee_wake, HIGH);
     
     /* Re-enter sleep mode. */
     enterSleep();
