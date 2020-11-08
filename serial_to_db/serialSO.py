@@ -54,14 +54,38 @@ def serial_read():
         logger.info("Data received via serial")
 
         #post data
-        if data[0]=='s': # check if data is not empty and entire string is being sent (first value is always "i", which is node ID)
+        if data[0]=='i': # check if data is not empty and entire string is being sent (first value is always "i", which is node ID)
+            logger.debug('data length: ' + str(len(data)))
             datestamp = time.time()
-            final_data = parse(data)
-            final_data["timestamp"] = datestamp
-            print(final_data)
-            post(final_data)
+            if len(data) == 21:
+                final_data = parse(data)
+                final_data["timestamp"] = datestamp
+                print(final_data)
+                post(final_data)
+            elif len(data) == 40:
+                print("NEXT will be printed two messages")
+                logger.debug('printing 2 messages')
+                data1 = data[:19]
+                data2 = data[19:]
+                # First printing
+                logger.debug('printing the first message')
+                final_data = parse(data1)
+                final_data["timestamp"] = datestamp
+                print(final_data)
+                post(final_data)
+                # Second printing
+                logger.debug('printing the second message')
+                final_data = parse(data2)
+                final_data["timestamp"] = datestamp
+                print(final_data)
+                post(final_data)
+            else:
+                logger.error('ERROR: Receiving the data')
+                print('The 2 messages are not printed')
+                print(len(data))
         else:
             logger.warning("Incomplete data packet received")
+            
 
 # Parse the data into a dictioary for later usage
 def parse(data):
@@ -72,6 +96,15 @@ def parse(data):
     for el in data.strip().split(';'):
         k,v = el.split(':')
         k = k.strip()
+        if k == 'i':
+            k = 'sensor_id'
+        elif k == 't':
+            k = 'temperature'
+        elif k == 'h':
+            k = 'humidity'
+        else:
+            pass
+
         v = v.strip()
         data_parse[k] = v if v else "missing"
     
