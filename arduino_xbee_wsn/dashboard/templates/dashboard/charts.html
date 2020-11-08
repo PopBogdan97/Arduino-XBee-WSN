@@ -1,0 +1,222 @@
+{% extends "dashboard/layout.html" %}
+
+{% block title %}
+<div>
+  <p style="color: white; text-align: center; font-size: large; font-weight: bolder;">{{ data.title }}</p>
+</div>
+{% endblock %}
+
+{% block temperature_chart %}
+<div>
+    <canvas id="tmpChart" height="200px" width="200px"></canvas>
+</div>
+
+<script>
+var value = {{ data.tmp_avg }};
+var data = {
+  labels: [
+    "My val",
+    ""
+  ],
+  datasets: [
+    {
+      data: [value, 50-value],
+      backgroundColor: [
+        "#3e95cd",
+        "#AAAAAA"
+      ],
+      hoverBackgroundColor: [
+        "#3e95cd",
+        "#AAAAAA"
+      ],
+      hoverBorderColor: [
+        "#3e95cd",
+        "#ffffff"
+      ]
+    }]
+};
+
+var tmpChart = new Chart(document.getElementById('tmpChart'), {
+  type: 'doughnut',
+  data: data,
+  options: {
+  	responsive: true,
+    legend: {
+      display: false
+    },
+    elements: {
+        center: {
+            text: value+"°"
+        }
+    },
+    cutoutPercentage: 80,
+    tooltips: {
+    	filter: function(item, data) {
+        var label = data.labels[item.index];
+        if (label) return item;
+      }
+    },
+    rotation: 1 * Math.PI,
+    circumference: 1 * Math.PI,
+    maintainAspectRatio: true
+  }
+});
+
+Chart.pluginService.register({
+    beforeDraw: function (chart) {
+        var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 114).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
+        var text = chart.config.options.elements.center.text,
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 1.6;
+        ctx.fillText(text, textX, textY);
+        ctx.fillStyle = "white";
+        ctx.save();
+    }
+});
+
+</script>
+{% endblock %}
+
+{% block humidity_chart %}
+
+<div>
+    <canvas id="humChart" height="200px" width="200px"></canvas>
+</div>
+
+<script>
+    var value = {{ data.hum_avg }};
+    var data = {
+      labels: [
+        "My val",
+        ""
+      ],
+      datasets: [
+        {
+          data: [value, 100-value],
+          backgroundColor: [
+            "#8e5ea2",
+            "#AAAAAA"
+          ],
+          hoverBackgroundColor: [
+            "#8e5ea2",
+            "#AAAAAA"
+          ],
+          hoverBorderColor: [
+            "#8e5ea2",
+            "#ffffff"
+          ]
+        }]
+    };
+    
+    var humChart = new Chart(document.getElementById('humChart'), {
+      type: 'doughnut',
+      data: data,
+      options: {
+          responsive: true,
+        legend: {
+          display: false
+        },
+        elements: {
+            center: {
+                text: value+"%"
+            }
+        },
+        cutoutPercentage: 80,
+        tooltips: {
+            filter: function(item, data) {
+            var label = data.labels[item.index];
+            if (label) return item;
+          }
+        },
+        rotation: 1 * Math.PI,
+        circumference: 1 * Math.PI,
+        maintainAspectRatio: true
+      }
+    });
+
+    Chart.pluginService.register({
+    beforeDraw: function (chart) {
+        var width = chart.chart.width,
+            height = chart.chart.height,
+            ctx = chart.chart.ctx;
+        ctx.restore();
+        var fontSize = (height / 114).toFixed(2);
+        ctx.font = fontSize + "em sans-serif";
+        ctx.textBaseline = "middle";
+        var text = chart.config.options.elements.center.text,
+            textX = Math.round((width - ctx.measureText(text).width) / 2),
+            textY = height / 1.6;
+        ctx.fillText(text, textX, textY);
+        ctx.fillStyle = "white";
+        ctx.save();
+    }
+});
+    
+</script>
+{% endblock %}
+
+{% block line_tmp_hum %}
+<canvas id="line-chart" widht="2000" height="600"></canvas>
+
+<script>
+new Chart(document.getElementById("line-chart"), {
+    type: 'line',
+    data: {
+      labels: {{ data.time_data|safe }},
+      datasets: [{ 
+          yAxisID: "y-axis-1",
+          data: {{ data.tmp_data }},
+          label: "Temperature",
+          borderColor: "#3e95cd",
+          fill: false
+        }, { 
+          yAxisID: "y-axis-2",
+          data: {{ data.hum_data }},
+          label: "Humidity",
+          borderColor: "#8e5ea2",
+          fill: false
+        }
+      ]
+    },
+    options: {
+      
+      scales: {
+        xAxes: [{
+          gridLines: {
+            lineWidth: 0.2, 
+            color: "#FFFFFF"
+          }
+        }],
+        yAxes: [{
+          id: 'y-axis-1',
+          type: 'linear',
+          position: 'left',
+          gridLines: {
+            lineWidth: 0.2, 
+            color: "#FFFFFF"
+          }
+        }, {
+          id: 'y-axis-2',
+          type: 'linear',
+          position: 'right',
+        }
+        ]
+      },
+      elements: {
+          center: {
+              text: ""
+          }
+      },
+      responsive: true,
+      maintainAspectRatio: false,
+    }
+  });
+</script>
+{% endblock %}
+
