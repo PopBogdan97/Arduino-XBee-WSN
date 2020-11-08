@@ -22,7 +22,7 @@ logger.debug("Starting script..")
 #Connect to the serial port
 
 #enter your device file
-arddev = '/dev/ttyACM1'
+arddev = '/dev/ttyACM0'
 baud = 9600
 
 #setup - if a Serial object can't be created, a SerialException will be raised.
@@ -54,12 +54,12 @@ def serial_read():
         logger.info("Data received via serial")
 
         #post data
-        if data[0]=='I': # check if data is not empty and entire string is being sent (first value is always "i", which is node ID)
+        if data[0]=='s': # check if data is not empty and entire string is being sent (first value is always "i", which is node ID)
             datestamp = time.time()
             final_data = parse(data)
             final_data["timestamp"] = datestamp
             print(final_data)
-            #post(final_data)
+            post(final_data)
         else:
             logger.warning("Incomplete data packet received")
 
@@ -82,12 +82,13 @@ def parse(data):
 def post(data_post):
     
     logger.debug('posting data on django server API')
-    url = 'something to be defined'
+    url = 'http://127.0.0.1:8000/serializer/api/sensors/'
     result = requests.post(url, data=data_post)
-    if result.status_code == requests.status_codes.ok:
+    if result.status_code == requests.codes.ok:
         logger.debug("POST request successful")
     else:
         logger.warning("POST error")
+        logger.warning("Status code: " + str(result.status_code))
 
 #RUN
 serial_read()
