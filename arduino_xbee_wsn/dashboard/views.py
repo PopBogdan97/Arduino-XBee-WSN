@@ -33,7 +33,8 @@ def charts(request):
         'hum_avg': hum_avg,
         'tmp_data': tmp_data,
         'hum_data': hum_data,
-        'time_data': time_data
+        'time_data': time_data,
+        'title': 'Overview'
     }
 
     return render(request, 'dashboard/charts.html',
@@ -63,12 +64,15 @@ def charts_detail(request, sensor_id):
     tmp_avg = round(sum_tmp / float(num_data), 2)
     hum_avg = round(sum_hum / float(num_data), 2)
 
+    title = 'Sensor ' + str(sensor_id)
+
     data = {
         'tmp_avg': tmp_avg,
         'hum_avg': hum_avg,
         'tmp_data': tmp_data,
         'hum_data': hum_data,
-        'time_data': time_data
+        'time_data': time_data,
+        'title': title
     }
 
     return render(request, 'dashboard/charts.html',

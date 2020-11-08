@@ -17,6 +17,7 @@
         {% include 'dashboard/includes/navbar.html' %}
         <div class="row">
             <div class="col">
+              {% block title %} {% endblock %}
               <div class="row">
                 <div class="col">
                     {% block temperature_chart %}{% endblock %}

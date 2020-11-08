@@ -1,5 +1,11 @@
 {% extends "dashboard/layout.html" %}
 
+{% block title %}
+<div>
+  <p style="color: white; text-align: center; font-size: large; font-weight: bolder;">{{ data.title }}</p>
+</div>
+{% endblock %}
+
 {% block temperature_chart %}
 <div>
     <canvas id="tmpChart" height="200px" width="200px"></canvas>
