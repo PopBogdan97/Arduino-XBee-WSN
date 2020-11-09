@@ -9,7 +9,7 @@ void loop() {
 
   while(Serial.available()){
     message = Serial.readString();
-    Serial.println(message);
+    Serial.print(message);
     delay(100);
     message = "";
   }

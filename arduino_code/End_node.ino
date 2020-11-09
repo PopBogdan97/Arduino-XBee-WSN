@@ -106,7 +106,7 @@ void loop()
             Serial.print(";t:");
             Serial.print(temp);
             Serial.print(";h:");
-            Serial.print(hum);
+            Serial.println(hum);
 
             delay(3000); //Delay 2 sec.
             sleep_count = 0;
